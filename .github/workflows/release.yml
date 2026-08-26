@@ -260,7 +260,7 @@ jobs:
       attestations: write # écrire au registre d'attestations du dépôt
     steps:
       - name: Récupérer l'artefact serveur
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: mentora-server-${{ needs.certify.outputs.version }}
 
@@ -282,7 +282,7 @@ jobs:
       contents: write # créer la GitHub Release et y attacher les artefacts — SEULE élévation, portée à ce job
     steps:
       - name: Récupérer tous les artefacts certifiés
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           merge-multiple: true
 
