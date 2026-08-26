@@ -1,0 +1,154 @@
+// The Account registries schema — STRICTLY the Canonical Persistence Model
+// (RC-1), reference: adapters-persistence-identity. The engine is a
+// mechanism (S-1); the R-A key of the Subscription lives in the
+// hand-authored migration SQL as a PARTIAL UNIQUE INDEX (the migration is
+// the truth of the DDL).
+//
+// JUSTIFIED DIVERGENCES from the reference (Domain Checklist §I):
+// - ONE context-wide fact-stream/outbox/inbox (AccountFact/AccountOutbox/
+//   AccountInbox) keyed by `subjectKey` (the unit's identity: personId for
+//   Account and AvailabilityFrame facts, subscriptionId for Subscription
+//   facts) instead of per-unit table sets: THREE units publish here where
+//   Identity had ONE — per-subject order (F4.3 §4) is exactly the
+//   (subjectKey, sequence) key, and the relay claims by subjectKey either
+//   way. Same laws, fewer tables, one relay source.
+// - The CHOREOGRAPHY STORE tables (RFC-003 P3/P4): the journey's Inbox,
+//   position and Outbox de commandes — Identity has no ratified reaction;
+//   Account's choreography is canon ("chorégraphie interne").
+// - NO SupportRequest fact/outbox/inbox tables: state-only by ABSENCE
+//   (precedent: Session). The absence is the proof.
+
+// Generator `prisma-client` (ESM TypeScript into src/generated) — same
+// collision-free door as the reference (a default-output generation would
+// overwrite the shared store's Agreement client).
+generator client {
+  provider               = "prisma-client"
+  output                 = "../src/generated/prisma"
+  moduleFormat           = "esm"
+  generatedFileExtension = "ts"
+  importFileExtension    = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("MENTORA_ACCOUNT_DATABASE_URL")
+}
+
+// RC-1 §1/§2 — the PRIVATE photographs: one row per unit, version =
+// optimistic guard (F5.2 §4; version law of this context: +1 per act).
+// stateKind / reachability / verificationState materialize the read
+// adapters' walks — derived from the photograph, never a second truth.
+model AccountSnapshot {
+  personId          String @id
+  version           Int
+  payload           String
+  checksum          String
+  stateKind         String
+  verificationState String
+  reachability      String?
+
+  @@index([stateKind])
+}
+
+// Singleton-par-Compte (RFC-003 P2): the frame's identity IS the person's.
+model AvailabilityFrameSnapshot {
+  personId String @id
+  version  Int
+  payload  String
+  checksum String
+}
+
+// The R-A key "une souscription active par titulaire" is the PARTIAL UNIQUE
+// INDEX subscription_active_holder_ra_key (migration SQL; WHERE stateKind =
+// 'Active' ON personId) — declared by the domain's specification, applied
+// structurally at retention, refused as SubscriptionAlreadyExists.
+model SubscriptionSnapshot {
+  subscriptionId String @id
+  version        Int
+  payload        String
+  checksum       String
+  personId       String
+  stateKind      String
+
+  @@index([personId, stateKind])
+}
+
+// STATE ONLY — no fact table, no outbox, no inbox exists for this unit.
+model SupportRequestSnapshot {
+  supportRequestId String @id
+  version          Int
+  payload          String
+  checksum         String
+  stateKind        String
+}
+
+// RC-1 §3 — the append-only fact stream of the CONTEXT: EventIdentity =
+// (subjectKey, sequence); wire payload of the published language (V-1);
+// no UPDATE, no DELETE (S-9). Order is per unit subject only (F4.3 §4).
+model AccountFact {
+  subjectKey      String
+  sequence        Int
+  type            String
+  payload         String
+  contractVersion Int
+  occurredAtMs    BigInt
+  checksum        String
+
+  @@id([subjectKey, sequence])
+}
+
+// RC-1 §4 — the Outbox de faits, born in the SAME atomic retention (A-3);
+// correlation/causation from the RetentionContext (RFC-001) when they exist.
+model AccountOutbox {
+  id               BigInt  @id @default(autoincrement())
+  messageId        String  @unique
+  subjectKey       String
+  sequence         Int
+  correlationId    String?
+  causationId      String?
+  deliveryAttempts Int     @default(0)
+  payload          String
+  occurredAtMs     BigInt
+  status           String  @default("pending")
+  claimedUntilMs   BigInt  @default(0)
+  nextAttemptAtMs  BigInt  @default(0)
+  quarantineReason String?
+
+  @@unique([subjectKey, sequence])
+  @@index([status, id])
+}
+
+// RC-1 §5 — the per-CONSUMER register of processed fact identities (M-4).
+model AccountInbox {
+  consumer      String
+  subjectKey    String
+  sequence      Int
+  processedAtMs BigInt
+
+  @@id([consumer, subjectKey, sequence])
+}
+
+// ---- The DECLARED choreography's store (RFC-003 P3/P4) ----------------
+// The journey's own Inbox (fact identities it retained), its POSITION (the
+// only memory a journey may have — the pardon test) and its Outbox de
+// commandes (drained by the composition's declared handler).
+
+model ChoreographyInbox {
+  factIdentity String @id
+  retainedAtMs BigInt
+}
+
+model ChoreographyPosition {
+  journeyKey String @id
+  // VersionedPayload of ChoreographyPosition (canonical JSON).
+  payload    String
+  checksum   String
+}
+
+model ChoreographyCommand {
+  id        BigInt @id @default(autoincrement())
+  commandId String @unique
+  payload   String
+
+  @@index([id])
+}

@@ -182,6 +182,79 @@ importers:
         specifier: 'catalog:'
         version: 2.1.5(@types/node@22.9.0)
 
+  packages/adapters-persistence-account:
+    dependencies:
+      '@mentora/application-account':
+        specifier: workspace:*
+        version: link:../application-account
+      '@mentora/application-kernel':
+        specifier: workspace:*
+        version: link:../application-kernel
+      '@mentora/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+      '@mentora/contracts-account':
+        specifier: workspace:*
+        version: link:../contracts-account
+      '@mentora/domain-account':
+        specifier: workspace:*
+        version: link:../domain-account
+      '@mentora/kernel':
+        specifier: workspace:*
+        version: link:../kernel
+      '@mentora/runtime-bootstrap':
+        specifier: workspace:*
+        version: link:../runtime-bootstrap
+      '@mentora/runtime-relay':
+        specifier: workspace:*
+        version: link:../runtime-relay
+      '@mentora/runtime-security':
+        specifier: workspace:*
+        version: link:../runtime-security
+      '@mentora/runtime-serialization':
+        specifier: workspace:*
+        version: link:../runtime-serialization
+      '@prisma/client':
+        specifier: 6.19.3
+        version: 6.19.3(prisma@6.19.3(magicast@0.3.5)(typescript@5.6.3))(typescript@5.6.3)
+    devDependencies:
+      '@mentora/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint-config
+      '@mentora/eslint-plugin-mentora':
+        specifier: workspace:*
+        version: link:../../tooling/eslint-plugin-mentora
+      '@mentora/runtime-config':
+        specifier: workspace:*
+        version: link:../runtime-config
+      '@mentora/testing-config':
+        specifier: workspace:*
+        version: link:../testing-config
+      '@mentora/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/tsconfig
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.9.0
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 2.1.5(vitest@2.1.5(@types/node@22.9.0))
+      eslint:
+        specifier: 'catalog:'
+        version: 9.15.0(jiti@2.7.0)
+      prisma:
+        specifier: 6.19.3
+        version: 6.19.3(magicast@0.3.5)(typescript@5.6.3)
+      rimraf:
+        specifier: 6.0.1
+        version: 6.0.1
+      typescript:
+        specifier: 'catalog:'
+        version: 5.6.3
+      vitest:
+        specifier: 'catalog:'
+        version: 2.1.5(@types/node@22.9.0)
+
   packages/adapters-persistence-agreement:
     dependencies:
       '@mentora/application-agreement':

@@ -1,0 +1,11 @@
+{
+  "//": "Self-contained config for the prisma-client generator's tsconfig sniffing ONLY (it resolves extends chains relative to the schema folder and would break on the workspace preset). Mirrors the workspace module settings; compiles nothing.",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+    "strict": true,
+    "noEmit": true
+  },
+  "include": []
+}

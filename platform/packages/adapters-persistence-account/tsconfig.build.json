@@ -1,0 +1,12 @@
+{
+  "//": "Emit/build project. Node types: adapter package (the vendor floor).",
+  "extends": "@mentora/tsconfig/library",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/.tsbuildinfo",
+    "types": ["node"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["**/*.spec.ts"]
+}
