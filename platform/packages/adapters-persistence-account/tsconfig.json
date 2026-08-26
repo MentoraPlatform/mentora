@@ -1,0 +1,6 @@
+{
+  "//": "IDE/lint/typecheck project (specs included, noEmit).",
+  "extends": "@mentora/tsconfig/library",
+  "compilerOptions": { "noEmit": true },
+  "include": ["src/**/*", "vitest.config.ts", "eslint.config.mjs"]
+}

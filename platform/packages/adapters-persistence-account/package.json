@@ -1,0 +1,56 @@
+{
+  "name": "@mentora/adapters-persistence-account",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The PostgreSQL/Prisma persistence adapter of the Account registries (Lot A04; RC-1 canonical model; reference: adapters-persistence-identity). Four photographs; ONE context-wide fact-stream/outbox/inbox keyed by unit subject (justified divergence: three publishing units, one relay); SupportRequest is state-only by ABSENCE of tables; the choreography store (Inbox, position, Outbox de commandes) lives here.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "prisma generate && tsc -b tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "prisma:generate": "prisma generate",
+    "clean": "rimraf dist .turbo src/generated/prisma"
+  },
+  "devDependencies": {
+    "@mentora/eslint-config": "workspace:*",
+    "@mentora/eslint-plugin-mentora": "workspace:*",
+    "@mentora/testing-config": "workspace:*",
+    "@mentora/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "eslint": "catalog:",
+    "prisma": "6.19.3",
+    "rimraf": "6.0.1",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "@mentora/runtime-config": "workspace:*"
+  },
+  "dependencies": {
+    "@mentora/application-account": "workspace:*",
+    "@mentora/application-kernel": "workspace:*",
+    "@mentora/contracts": "workspace:*",
+    "@mentora/contracts-account": "workspace:*",
+    "@mentora/domain-account": "workspace:*",
+    "@mentora/kernel": "workspace:*",
+    "@mentora/runtime-bootstrap": "workspace:*",
+    "@mentora/runtime-relay": "workspace:*",
+    "@mentora/runtime-security": "workspace:*",
+    "@mentora/runtime-serialization": "workspace:*",
+    "@prisma/client": "6.19.3"
+  }
+}
