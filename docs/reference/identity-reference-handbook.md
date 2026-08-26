@@ -131,3 +131,7 @@ La Feature se ferme quand toutes ses stories sont fermées **ou** déférées av
 - MENTORA0001 interdit `user` jusque dans les noms de variables ; MENTORA0003 impose `<Truth><PastParticiple>` sous `events/`.
 - Un event GitHub `opened` sans label ne protège pas le canon : poser le label puis pousser un commit vide.
 - Ne jamais chaîner `cmd <<'EOF' || fallback` puis un second heredoc (le premier avale le second) ; préférer l'outil d'édition aux remplacements `node -e` sur fichiers CRLF.
+
+## 12. La règle de comparaison (S0-4, 2026-08-26)
+
+Identity est le **REFERENCE DOMAIN déclaré**. Tout nouveau domaine est **comparé à Identity, systématiquement**, avant chaque fermeture de Feature et au certificat : mêmes anneaux, mêmes formes de ports, mêmes canaux (Refus valeur / violation / Failure), mêmes suites contractuelles rejouées mémoire puis moteur réel, mêmes preuves. La comparaison est **explicite** : le commentaire de fermeture cite le fichier d'Identity pris pour modèle pour chaque brique (« copié de X, différences : … justifiée par … »). Une différence non justifiée par le Canon ou une RFC ratifiée est un écart — elle bloque la fermeture. Précédent : Account (A01-A03) a suivi cette règle avant qu'elle soit écrite ; la seule divergence (loi de version +1 par acte, `unretainedActs`) est documentée et justifiée par les verbes sans fait.

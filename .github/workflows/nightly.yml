@@ -14,6 +14,8 @@
 # prouverait rien — le mandat exige deux EXÉCUTIONS réelles du même
 # arbre, pas une exécution et son écho.
 
+# Ré-enregistré après la migration MentoraOS→MentoraPlatform (S0-2, 2026-08-26) :
+# un push touchant ce fichier force GitHub Actions à ré-indexer le workflow.
 name: nightly
 
 on:

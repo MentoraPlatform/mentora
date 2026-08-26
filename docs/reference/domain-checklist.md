@@ -50,3 +50,8 @@
 - [ ] README par paquet (loi, asymétries, critère d'acceptation, client généré).
 - [ ] ADR/RFC à jour (statut réel : proposée / en instruction / ratifiée) ; label `titre-vii` sur toute PR canon.
 - [ ] Stories fermées avec preuve ; déférements écrits ; Feature fermée avec déclaration ; certificat d'Epic mis à jour sur l'état réel.
+
+## I. Comparaison au domaine de référence (obligatoire — S0-4)
+- [ ] Chaque brique (unité, port, policy, séquence, suite, adapter) cite son modèle Identity dans le commentaire de fermeture.
+- [ ] Toute différence avec Identity est écrite ET justifiée (Canon, RFC ratifiée, ou caractéristique de l'unité — ex. loi de version d'Account).
+- [ ] Aucune différence non justifiée ne subsiste ; sinon la Feature reste ouverte.

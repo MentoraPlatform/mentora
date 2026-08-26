@@ -38,3 +38,6 @@ Domain Checklist cochée avec preuves → Features fermées avec déclaration �
 
 ## Budget de référence (observé sur Identity)
 Sprint 1 : 6 PR (#134-#139) · Sprint 2 : 4 PR (#141-#143 + gouvernance) · Sprint 3 : 2 PR (#149-#150) · Sprint 4 : 2 PR (#151-#152). Chaque PR < 600 lignes nettes, gate < 3 min en CI. Un domaine à deux unités et cinq commandes = ~14 PR.
+
+## Étape 9 — Démontrer la conformité au REFERENCE DOMAIN (S0-4)
+Avant le certificat : dérouler la section I de la Domain Checklist — la comparaison explicite à Identity, brique par brique, différences justifiées. Le certificat du domaine cite ce relevé de comparaison.

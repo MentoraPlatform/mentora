@@ -29,6 +29,8 @@
 # reproductible localement, en CI, sur tout plan. Sorties SPDX 2.3 ET
 # CycloneDX. Aucune dépendance ajoutée au dépôt, aucune action tierce.
 
+# Ré-enregistré après la migration MentoraOS→MentoraPlatform (S0-2, 2026-08-26) :
+# un push touchant ce fichier force GitHub Actions à ré-indexer le workflow.
 name: release
 
 on:
