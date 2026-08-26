@@ -21,12 +21,14 @@ import { shutdownServer } from './shutdown/server-shutdown.js';
 
 const url = environmentSource().read('MENTORA_AGREEMENT_DATABASE_URL');
 const identityUrl = environmentSource().read('MENTORA_IDENTITY_DATABASE_URL');
+const accountUrl = environmentSource().read('MENTORA_ACCOUNT_DATABASE_URL');
 const ready = url !== undefined && identityUrl !== undefined;
 
 const specSources = (extra: Record<string, string> = {}) => [
   inMemorySource('gateway-spec', {
     MENTORA_AGREEMENT_DATABASE_URL: url ?? 'postgresql://void',
     MENTORA_IDENTITY_DATABASE_URL: identityUrl ?? 'postgresql://void',
+    MENTORA_ACCOUNT_DATABASE_URL: accountUrl ?? 'postgresql://void',
     MENTORA_HTTP_PORT: '0',
     MENTORA_LOG_THRESHOLD: 'error',
     MENTORA_RELAY_INTERVAL_MILLIS: '3600000', // the spec never ticks the relay.

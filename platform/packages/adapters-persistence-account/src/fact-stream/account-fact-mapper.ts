@@ -94,11 +94,28 @@ export const toWireFact = (fact: AccountContextDomainEvent): AccountEventContrac
   }
 };
 
-/** The subject key of a wire fact — the unit identity the stream orders by (F4.3 §4). */
-export const subjectKeyOf = (wire: AccountEventContract): string =>
-  wire.type === 'SubscriptionStarted' || wire.type === 'SubscriptionEnded'
-    ? wire.subscriptionId
-    : wire.personId;
+/**
+ * The subject key of a wire fact — the UNIT identity the stream orders by
+ * (F4.3 §4), QUALIFIED by unit family: the Account and its AvailabilityFrame
+ * share the same identity VALUE (the person — RFC-003 P1/P2), so the bare id
+ * would collide two distinct units' sequences in the context-wide stream.
+ * The prefix keeps one ordered stream per UNIT — exactly the law; the key
+ * stays opaque to the relay.
+ */
+export const subjectKeyOf = (wire: AccountEventContract): string => {
+  switch (wire.type) {
+    case 'SubscriptionStarted':
+    case 'SubscriptionEnded':
+      return `subscription:${wire.subscriptionId}`;
+    case 'AvailabilityFrameChanged':
+      return `frame:${wire.personId}`;
+    case 'PersonRegistered':
+    case 'PreferenceChanged':
+    case 'ReachabilityChanged':
+    case 'AccountClosed':
+      return `account:${wire.personId}`;
+  }
+};
 
 export interface AccountFactRow {
   readonly subjectKey: string;

@@ -1,4 +1,6 @@
 import type {
+  ReactionJournalPort,
+  ReactionStepRecord,
   ReadJournalPort,
   ReadStepRecord,
   SequenceJournalPort,
@@ -28,5 +30,13 @@ export class LoggingReadJournal implements ReadJournalPort {
 
   record(entry: ReadStepRecord): void {
     this.logger.info('read step', { ...entry });
+  }
+}
+
+export class LoggingReactionJournal implements ReactionJournalPort {
+  constructor(private readonly logger: Logger) {}
+
+  record(entry: ReactionStepRecord): void {
+    this.logger.info('reaction step', { ...entry });
   }
 }
