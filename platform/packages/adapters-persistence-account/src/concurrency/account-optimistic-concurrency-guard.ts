@@ -34,7 +34,14 @@ export const classifyEngineError = (error: unknown): EngineCollision => {
     return 'ra-key';
   }
   if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-    // P2002 without the R-A index name: a snapshot pkey collision — R-B.
+    // Prisma reports a partial-unique-index violation as P2002 with the
+    // COLUMNS as target (never the index name — probed on the real
+    // engine): on SubscriptionSnapshot, target ["personId"] IS the R-A
+    // key; the pkey collision targets the unit's own identifier — R-B.
+    const meta = error.meta as { modelName?: string; target?: readonly string[] } | undefined;
+    if (meta?.modelName === 'SubscriptionSnapshot' && (meta.target ?? []).includes('personId')) {
+      return 'ra-key';
+    }
     return 'duplicate-identity';
   }
   if (text.includes('Snapshot_pkey')) {

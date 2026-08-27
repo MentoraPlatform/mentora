@@ -18,3 +18,7 @@ export * from './outbox/account-outbox-store.js';
 export * from './concurrency/account-optimistic-concurrency-guard.js';
 export * from './retention/account-retention-engines.js';
 export * from './module/account-persistence-module.js';
+export * from './repository/prisma-account-repository-adapters.js';
+export * from './read-model/prisma-account-state-read-adapter.js';
+export * from './relay/prisma-account-relay-source.js';
+export * from './choreography/prisma-choreography-store.js';

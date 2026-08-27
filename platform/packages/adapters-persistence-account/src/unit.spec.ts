@@ -135,7 +135,7 @@ describe('the fact mapper — wire facts of the published language, keyed by uni
       const wire = toWireFact(fact);
       expect(validateAccountEvent(wire).ok, wire.type).toBe(true);
       expect(subjectKeyOf(wire)).toBe(
-        wire.type === 'SubscriptionStarted' ? 'sub-1' : 'person-1',
+        wire.type === 'SubscriptionStarted' ? 'subscription:sub-1' : 'account:person-1',
       );
       const row = toFactRow(fact);
       expect(row.subjectKey).toBe(subjectKeyOf(wire));

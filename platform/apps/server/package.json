@@ -29,13 +29,17 @@
     "vitest": "catalog:"
   },
   "dependencies": {
+    "@mentora/adapters-persistence-account": "workspace:*",
     "@mentora/adapters-persistence-agreement": "workspace:*",
     "@mentora/adapters-persistence-identity": "workspace:*",
+    "@mentora/application-account": "workspace:*",
     "@mentora/application-agreement": "workspace:*",
     "@mentora/application-identity": "workspace:*",
     "@mentora/application-kernel": "workspace:*",
     "@mentora/contracts": "workspace:*",
+    "@mentora/contracts-account": "workspace:*",
     "@mentora/contracts-identity": "workspace:*",
+    "@mentora/domain-account": "workspace:*",
     "@mentora/domain-agreement": "workspace:*",
     "@mentora/domain-identity": "workspace:*",
     "@mentora/kernel": "workspace:*",

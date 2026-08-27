@@ -26,7 +26,7 @@ export class AccountVersionConflictError extends Error {
 
   constructor(subject: string, expectedVersion: number) {
     super(
-      `PERSIST.VERSION_CONFLICT: two Sequences, one version — '${subject}' expected v${String(expectedVersion)}`,
+      `PERSIST.VERSION_CONFLICT: version conflict on '${subject}' — two Sequences, one version; expected v${String(expectedVersion)}`,
     );
   }
 }

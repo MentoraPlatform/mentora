@@ -51,6 +51,7 @@
     "@mentora/runtime-relay": "workspace:*",
     "@mentora/runtime-security": "workspace:*",
     "@mentora/runtime-serialization": "workspace:*",
-    "@prisma/client": "6.19.3"
+    "@prisma/client": "6.19.3",
+    "@mentora/runtime-config": "workspace:*"
   }
 }

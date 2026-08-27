@@ -24,6 +24,25 @@ import {
   ScryptPasswordHasher,
   type IdentityPrismaClient,
 } from '@mentora/adapters-persistence-identity';
+import {
+  AccountFactStreamStore,
+  AccountOutboxStore,
+  AccountPersistenceModule,
+  AccountRetentionEngine,
+  AvailabilityFrameRetentionEngine,
+  createAccountPrismaClient,
+  PrismaAccountRepositoryAdapter,
+  PrismaAccountStateReadAdapter,
+  PrismaAvailabilityFrameRepositoryAdapter,
+  PrismaChoreographyStore,
+  PrismaSubscriptionRepositoryAdapter,
+  PrismaSupportRequestRepositoryAdapter,
+  SubscriptionRetentionEngine,
+  SupportRequestRetentionEngine,
+  type AccountPrismaClient,
+} from '@mentora/adapters-persistence-account';
+import type { AccountAssembly } from '@mentora/application-account';
+import { composeAccount, DevelopmentNoSettlementAdapter } from '@mentora/application-account';
 import type { AgreementAssembly } from '@mentora/application-agreement';
 import { composeAgreement } from '@mentora/application-agreement';
 import type { IdentityAccessAssembly } from '@mentora/application-identity';
@@ -58,7 +77,11 @@ import { SessionGate } from '../gateway/session-gate.js';
 import { serverHealth } from '../health/server-health.js';
 import { EmptyRoutingPublisher } from '../modules/empty-routing-publisher.js';
 import { HttpServerModule } from '../modules/http-server-module.js';
-import { LoggingSequenceJournal, LoggingReadJournal } from '../modules/logging-journals.js';
+import {
+  LoggingReactionJournal,
+  LoggingReadJournal,
+  LoggingSequenceJournal,
+} from '../modules/logging-journals.js';
 
 /**
  * THE COMPOSITION ROOT of the Mentora server — F4.4 §2: "le seul endroit du
@@ -84,8 +107,10 @@ export interface ServerGraph {
   readonly container: RuntimeContainer;
   readonly assembly: AgreementAssembly;
   readonly identity: IdentityAccessAssembly;
+  readonly account: AccountAssembly;
   readonly prisma: AgreementPrismaClient;
   readonly identityPrisma: IdentityPrismaClient;
+  readonly accountPrisma: AccountPrismaClient;
   /** The dev-vault of proof material — the ACL of the Account stores here (stand-in until A05). */
   readonly proofVault: PrismaProofMaterialVault;
   readonly loggers: LoggerFactory;
@@ -190,6 +215,68 @@ export const composeServer = (config: ServerConfig, overrides: ServerOverrides =
     technical: { commandMaxAttempts: config.MENTORA_COMMAND_MAX_ATTEMPTS },
   });
 
+  // ---- (11b'') the ACCOUNT context over ITS real registries (Lot A04) —
+  // the person's truth, the only business OHS. The gateway does NOT admit
+  // its commands yet (A05: entry + emitter grid); the assembly is composed,
+  // boot-validated and lifecycle-owned from THIS lot on.
+  const accountPrisma = createAccountPrismaClient(config.MENTORA_ACCOUNT_DATABASE_URL);
+  const accountFactStream = new AccountFactStreamStore();
+  const accountOutbox = new AccountOutboxStore(identity);
+  const accountAssembly = composeAccount({
+    accountRepository: new PrismaAccountRepositoryAdapter(
+      accountPrisma,
+      new AccountRetentionEngine(accountFactStream, accountOutbox),
+    ),
+    availabilityFrameRepository: new PrismaAvailabilityFrameRepositoryAdapter(
+      accountPrisma,
+      new AvailabilityFrameRetentionEngine(accountFactStream, accountOutbox),
+    ),
+    subscriptionRepository: new PrismaSubscriptionRepositoryAdapter(
+      accountPrisma,
+      new SubscriptionRetentionEngine(accountFactStream, accountOutbox),
+    ),
+    supportRequestRepository: new PrismaSupportRequestRepositoryAdapter(
+      accountPrisma,
+      new SupportRequestRetentionEngine(),
+    ),
+    availabilityFrameRead: new PrismaAccountStateReadAdapter(
+      accountPrisma,
+      config.MENTORA_NOTIFICATION_ACTOR as ActorRef,
+    ),
+    reachabilityRead: new PrismaAccountStateReadAdapter(
+      accountPrisma,
+      config.MENTORA_NOTIFICATION_ACTOR as ActorRef,
+    ),
+    readRights: new PrismaAccountStateReadAdapter(
+      accountPrisma,
+      config.MENTORA_NOTIFICATION_ACTOR as ActorRef,
+    ),
+    choreographyStore: new PrismaChoreographyStore(accountPrisma, () => clock.now().epochMillis),
+    // RFC-003 P4 / CTO order: the PROVISIONAL adapter refuses to exist
+    // outside development — a staging/production Root must provide the
+    // real Settlement adapter or die at assembly (fail closed).
+    settlement: new DevelopmentNoSettlementAdapter(config.MENTORA_ENVIRONMENT),
+    clock,
+    commandJournal,
+    readJournal,
+    reactionJournal: new LoggingReactionJournal(loggers.loggerFor('journal-reaction')),
+    choreographyActor: config.MENTORA_CHOREOGRAPHY_ACTOR as ActorRef,
+    environment: config.MENTORA_ENVIRONMENT,
+    product: {
+      reachability: {
+        admittedChannels: config.MENTORA_PRODUCT_REACHABILITY_CHANNELS.split(',')
+          .map((value) => value.trim())
+          .filter((value) => value !== ''),
+      },
+      subscription: {
+        admittedOffers: config.MENTORA_PRODUCT_SUBSCRIPTION_OFFERS.split(',')
+          .map((value) => value.trim())
+          .filter((value) => value !== ''),
+      },
+    },
+    technical: { commandMaxAttempts: config.MENTORA_COMMAND_MAX_ATTEMPTS },
+  });
+
   // ---- (11b') the proof mechanisms (Story #96): scrypt digest, dev vault.
   const proofVault = new PrismaProofMaterialVault(identityPrisma, new ScryptPasswordHasher());
 
@@ -252,6 +339,7 @@ export const composeServer = (config: ServerConfig, overrides: ServerOverrides =
   const container = new RuntimeBuilder()
     .withModule(new AgreementPersistenceModule(prisma))
     .withModule(new IdentityPersistenceModule(identityPrisma))
+    .withModule(new AccountPersistenceModule(accountPrisma))
     .withModule(relayModule)
     .withModule(http)
     .withValidator({
@@ -282,14 +370,30 @@ export const composeServer = (config: ServerConfig, overrides: ServerOverrides =
         }
       },
     })
+    .withValidator({
+      name: 'account-database-reachable',
+      validate: async () => {
+        try {
+          await accountPrisma.$queryRaw`SELECT 1`;
+          return { ok: true as const, value: undefined };
+        } catch (error) {
+          return {
+            ok: false as const,
+            error: error instanceof Error ? error.message : String(error),
+          };
+        }
+      },
+    })
     .build();
 
   return {
     container,
     assembly,
     identity: identityAssembly,
+    account: accountAssembly,
     prisma,
     identityPrisma,
+    accountPrisma,
     proofVault,
     loggers,
     metrics,

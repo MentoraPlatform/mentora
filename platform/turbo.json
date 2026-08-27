@@ -64,7 +64,8 @@
       "dependsOn": [
         "^build",
         "@mentora/adapters-persistence-agreement#test",
-        "@mentora/adapters-persistence-identity#test"
+        "@mentora/adapters-persistence-identity#test",
+        "@mentora/adapters-persistence-account#test"
       ],
       "inputs": [
         "src/**",
@@ -147,6 +148,19 @@
         "dist/**",
         "src/generated/prisma/**"
       ]
+    },
+    "@mentora/adapters-persistence-account#test": {
+      "dependsOn": [
+        "@mentora/adapters-persistence-account#build",
+        "^build"
+      ],
+      "inputs": [
+        "src/**",
+        "test/**",
+        "vitest.config.*",
+        "package.json"
+      ],
+      "outputs": []
     }
   },
   "globalPassThroughEnv": [

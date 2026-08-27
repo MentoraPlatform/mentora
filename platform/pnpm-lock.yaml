@@ -47,12 +47,18 @@ importers:
 
   apps/server:
     dependencies:
+      '@mentora/adapters-persistence-account':
+        specifier: workspace:*
+        version: link:../../packages/adapters-persistence-account
       '@mentora/adapters-persistence-agreement':
         specifier: workspace:*
         version: link:../../packages/adapters-persistence-agreement
       '@mentora/adapters-persistence-identity':
         specifier: workspace:*
         version: link:../../packages/adapters-persistence-identity
+      '@mentora/application-account':
+        specifier: workspace:*
+        version: link:../../packages/application-account
       '@mentora/application-agreement':
         specifier: workspace:*
         version: link:../../packages/application-agreement
@@ -65,9 +71,15 @@ importers:
       '@mentora/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@mentora/contracts-account':
+        specifier: workspace:*
+        version: link:../../packages/contracts-account
       '@mentora/contracts-identity':
         specifier: workspace:*
         version: link:../../packages/contracts-identity
+      '@mentora/domain-account':
+        specifier: workspace:*
+        version: link:../../packages/domain-account
       '@mentora/domain-agreement':
         specifier: workspace:*
         version: link:../../packages/domain-agreement
@@ -205,6 +217,9 @@ importers:
       '@mentora/runtime-bootstrap':
         specifier: workspace:*
         version: link:../runtime-bootstrap
+      '@mentora/runtime-config':
+        specifier: workspace:*
+        version: link:../runtime-config
       '@mentora/runtime-relay':
         specifier: workspace:*
         version: link:../runtime-relay
@@ -224,9 +239,6 @@ importers:
       '@mentora/eslint-plugin-mentora':
         specifier: workspace:*
         version: link:../../tooling/eslint-plugin-mentora
-      '@mentora/runtime-config':
-        specifier: workspace:*
-        version: link:../runtime-config
       '@mentora/testing-config':
         specifier: workspace:*
         version: link:../testing-config

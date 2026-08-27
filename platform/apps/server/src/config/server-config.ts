@@ -18,6 +18,17 @@ import type { ConfigViolation } from '@mentora/runtime-config';
 export const SERVER_CONFIG_SCHEMA = {
   MENTORA_AGREEMENT_DATABASE_URL: { kind: 'string', nonBlank: true },
   MENTORA_IDENTITY_DATABASE_URL: { kind: 'string', nonBlank: true },
+  MENTORA_ACCOUNT_DATABASE_URL: { kind: 'string', nonBlank: true },
+  /** The executable's declared environment — gates the PROVISIONAL Settlement adapter (RFC-003 P4). */
+  MENTORA_ENVIRONMENT: {
+    kind: 'choice',
+    values: ['development', 'staging', 'production'],
+    default: 'development',
+  },
+  /** The sanctioned Notification actor of the ReachabilityQuery grid (declared, injected). */
+  MENTORA_NOTIFICATION_ACTOR: { kind: 'string', nonBlank: true, default: 'notification-sanctioned' },
+  /** The declared actor the Account choreography commands with (M-10 closed list). */
+  MENTORA_CHOREOGRAPHY_ACTOR: { kind: 'string', nonBlank: true, default: 'account-choreography' },
   MENTORA_HTTP_PORT: { kind: 'number', min: 0, max: 65_535, default: 3001 },
   MENTORA_LOG_THRESHOLD: {
     kind: 'choice',
@@ -43,6 +54,9 @@ export const SERVER_CONFIG_SCHEMA = {
   MENTORA_PRODUCT_PROOF_ACCEPTED_STRENGTHS: { kind: 'string', nonBlank: true, default: 'standard,elevated' },
   /** MFA composition table (Story #111): comma-separated 'a+b=c' entries; empty = none declared. */
   MENTORA_PRODUCT_PROOF_COMPOSITIONS: { kind: 'string', default: 'standard+standard=elevated' },
+  /** Account product params (RFC-003 P5): explicit allowlists, nothing more. */
+  MENTORA_PRODUCT_REACHABILITY_CHANNELS: { kind: 'string', nonBlank: true, default: 'email,sms' },
+  MENTORA_PRODUCT_SUBSCRIPTION_OFFERS: { kind: 'string', nonBlank: true, default: 'offer-basic' },
 } as const;
 
 export type ServerConfig = ConfigValues<typeof SERVER_CONFIG_SCHEMA>;
