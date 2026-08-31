@@ -33,7 +33,7 @@
     "@mentora/tsconfig": "workspace:*",
     "@types/node": "catalog:",
     "eslint": "catalog:",
-    "rimraf": "6.0.1",
+    "rimraf": "6.1.3",
     "typescript": "catalog:",
     "@mentora/testing-clock": "workspace:*",
     "vitest": "catalog:"

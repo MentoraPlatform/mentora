@@ -35,7 +35,7 @@
     "@vitest/coverage-v8": "catalog:",
     "eslint": "catalog:",
     "prisma": "6.19.3",
-    "rimraf": "6.0.1",
+    "rimraf": "6.1.3",
     "typescript": "catalog:",
     "vitest": "catalog:",
     "@mentora/runtime-config": "workspace:*"
